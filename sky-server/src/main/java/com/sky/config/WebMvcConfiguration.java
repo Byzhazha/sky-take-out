@@ -34,30 +34,31 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         log.info("开始注册自定义拦截器...");
         registry.addInterceptor(jwtTokenAdminInterceptor)
                 .addPathPatterns("/admin/**")
-                .excludePathPatterns("/admin/employee/login");
+                .excludePathPatterns("/admin/employee/login")
+                .excludePathPatterns("/swagger-resources/**")
+                .excludePathPatterns("/webjars/**") 
+                .excludePathPatterns("/v3/api-docs")
+                .excludePathPatterns("/v3/api-docs/**")
+                .excludePathPatterns("/v3/api-docs/swagger-config")
+                .excludePathPatterns("/swagger-ui.html")
+                .excludePathPatterns("/swagger-ui/**")
+                .excludePathPatterns("/favicon.ico");
     }
 
-    /**
-     * 扩展Spring MVC框架的消息转化器
-     *
-     * @param converters
-     */
-    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-        log.info("扩展消息转换器...");
-        //创建一个消息转换器对象
-        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-        //需要为消息转换器设置一个对象转换器，对象转换器可以将Java对象序列化为json数据
-        converter.setObjectMapper(new JacksonObjectMapper());
-        //将自己的消息转化器加入容器中
-        converters.add(0, converter);
-    }
-
-    @Bean
-    public OpenAPI customOpenAPI() {
-        return new OpenAPI()
-                .info(new Info()
-                        .title("Sky Take Out API")
-                        .version("1.0")
-                        .description("Sky Take Out API Documentation"));
-    }
+    ///**
+    // * 扩展Spring MVC框架的消息转化器
+    // *
+    // * @param converters
+    // */
+    //public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+    //    log.info("扩展消息转换器...");
+    //    //创建一个消息转换器对象
+    //    MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+    //    //需要为消息转换器设置一个对象转换器，对象转换器可以将Java对象序列化为json数据
+    //    converter.setObjectMapper(new JacksonObjectMapper());
+    //    //将自己的消息转化器加入容器中
+    //    converters.add(0, converter);
+    //}
 }
+
+    

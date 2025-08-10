@@ -15,6 +15,13 @@ spring:
     username: ${sky.datasource.username}
     password: ${sky.datasource.password}
 
+# springdoc配置
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
 mybatis:
   #mapper配置文件
   mapper-locations: classpath:mapper/*.xml
