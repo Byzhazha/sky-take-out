@@ -31,6 +31,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // 放行API文档和员工登录页面，不需要登录
                         .requestMatchers(
+                                "/admin/**",
+                                "/user/**",
                                 "/webjars/**",
                                 "/swagger-resources/**",
                                 "/v3/api-docs",
