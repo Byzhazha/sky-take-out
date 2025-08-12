@@ -120,4 +120,12 @@ public class EmployeeController {
         return Result.success(employee);
     }
 
+
+    @PutMapping
+    @Operation(summary = "编辑员工信息")
+    public Result update(@RequestBody EmployeeDTO employeeDTO){
+        employeeService.update(employeeDTO);
+        return Result.success();
     }
+
+}
