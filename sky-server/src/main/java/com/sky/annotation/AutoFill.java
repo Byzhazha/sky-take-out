@@ -1,8 +1,7 @@
 package com.sky.annotation;
 
-
 import com.sky.enumeration.OperationType;
-import io.swagger.v3.oas.annotations.Operation;
+
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
