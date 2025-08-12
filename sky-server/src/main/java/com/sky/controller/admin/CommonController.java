@@ -1,4 +1,5 @@
 package com.sky.controller.admin;
+import com.sky.constant.MessageConstant;
 import com.sky.properties.AliOssProperties;
 import com.sky.result.Result;
 import com.sky.utils.AliOssUtil;
@@ -38,12 +39,13 @@ public class CommonController {
             String originalFilename = file.getOriginalFilename();
             String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
             String objectName = UUID.randomUUID() +extension;
-            aliOssUtil.upload(file.getBytes(), objectName);
+
+            String filePath = aliOssUtil.upload(file.getBytes(), objectName);
+            return Result.success(filePath);
         } catch (IOException e) {
             log.error("文件上传失败：{}",e);
         }
 
-
-        return null;
+        return Result.error(MessageConstant.UPLOAD_FAILED);
     }
 }
