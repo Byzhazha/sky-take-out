@@ -2,9 +2,10 @@ package com.sky.controller.admin;
 
 import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
+import com.sky.entity.Dish; // 引入Dish实体
 import com.sky.result.PageResult;
 import com.sky.result.Result;
-import com.sky.service.Dishservice;
+import com.sky.service.DishService;
 import com.sky.vo.DishVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,7 +22,7 @@ import java.util.List;
 public class DishController {
 
     @Autowired
-    private Dishservice dishservice;
+    private DishService dishservice;
 
     /**
      * 新增菜品
@@ -41,7 +42,7 @@ public class DishController {
     @GetMapping("/page")
     @Operation(summary = "菜品分页查询")
     public Result<PageResult> page(DishPageQueryDTO dishPageQueryDTO) {
-        log.info("菜品分页查询", dishPageQueryDTO);
+        log.info("菜品分页查询, 参数: {}", dishPageQueryDTO);
         PageResult pageResult = dishservice.pageQuery(dishPageQueryDTO);
 
         return Result.success(pageResult);
@@ -67,9 +68,20 @@ public class DishController {
     @PutMapping
     @Operation(summary = "修改菜品")
     public Result update(@RequestBody DishDTO dishDTO){
-        log.info("根据id查询菜品:{}",dishDTO);
+        log.info("修改菜品:{}",dishDTO);
         dishservice.updateWithFlavor(dishDTO);
-        return Result.success(dishDTO);
+        return Result.success();
+    }
 
+    /**
+     * 根据分类id查询菜品
+     * @param categoryId
+     * @return
+     */
+    @GetMapping("/list")
+    @Operation(summary = "根据分类id查询菜品")
+    public Result<List<Dish>> list(Long categoryId){
+        List<Dish> list = dishservice.list(categoryId);
+        return Result.success(list);
     }
 }
