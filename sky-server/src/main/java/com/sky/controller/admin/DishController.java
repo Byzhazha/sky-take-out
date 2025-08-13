@@ -66,7 +66,7 @@ public class DishController {
 
     @PutMapping
     @Operation(summary = "修改菜品")
-    public Result update(DishDTO dishDTO){
+    public Result update(@RequestBody DishDTO dishDTO){
         log.info("根据id查询菜品:{}",dishDTO);
         dishservice.updateWithFlavor(dishDTO);
         return Result.success(dishDTO);

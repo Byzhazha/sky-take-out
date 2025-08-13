@@ -15,6 +15,14 @@ spring:
     username: ${sky.datasource.username}
     password: ${sky.datasource.password}
 
+  data:
+    redis:
+      host: ${sky.data.redis.host}
+      port: ${sky.data.redis.port}
+      username: ${sky.data.redis.username}
+      password: ${sky.data.redis.password}
+      database: ${sky.data.redis.database}
+
 # springdoc配置
 springdoc:
   api-docs:

@@ -120,12 +120,13 @@ public class DishserviceImpl implements Dishservice {
      *
      * @param dishDTO
      */
+    @Transactional
     public void updateWithFlavor(DishDTO dishDTO) {
 
         Dish dish = new Dish();
         BeanUtils.copyProperties(dishDTO,dish);
 
-        dishMapper.update(dishDTO);
+        dishMapper.update(dish);
 
         dishFlavorMapper.deleteByDishId(dishDTO.getId());
 
