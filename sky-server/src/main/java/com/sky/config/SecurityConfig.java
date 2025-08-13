@@ -32,14 +32,16 @@ public class SecurityConfig {
                         // 放行API文档和员工登录页面，不需要登录
                         .requestMatchers(
                                 "/admin/**",
-                                "/user/**",
                                 "/webjars/**",
                                 "/swagger-resources/**",
                                 "/v3/api-docs",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/favicon.ico",
-                                "/admin/employee/login"
+                                "/admin/employee/login",
+                                "/admin/employee/login", // 管理员登录
+                                "/user/user/login",      // 用户登录
+                                "/user/shop/**"         // 用户端店铺状态
                         ).permitAll()
                         // 其他所有请求都需要登录认证
                         .anyRequest().authenticated()

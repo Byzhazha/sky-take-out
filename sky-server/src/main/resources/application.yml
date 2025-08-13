@@ -23,6 +23,7 @@ spring:
       password: ${sky.data.redis.password}
       database: ${sky.data.redis.database}
 
+
 # springdoc配置
 springdoc:
   api-docs:
@@ -55,8 +56,15 @@ sky:
     # 设置前端传递过来的令牌名称
     admin-token-name: token
 
+    user-secret-key: d4e1f0b2a8c7d6e5f4d3c2b1a0987654d4e1f0b2a8c7d6e5f4d3c2b1a0987654 # 请替换为一个自定义的复杂字符串
+    user-ttl: 86400000 # 24小时
+    user-token-name: authentication
+
   alioss:
     endpoint: ${sky.alioss.endpoint}}
     access-key-id: ${sky.alioss. access-key-id}}
     access-key-secret: ${sky.access-key-secret}}
     bucket-name: ${sky.alioss.bucket-name}}
+  wechat:
+    appid: ${sky.wechat.appid}
+    secret: ${sky.wechat.secret}
