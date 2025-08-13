@@ -1,6 +1,7 @@
 package com.sky.controller.user;
 
 import com.sky.context.BaseContext;
+import com.sky.dto.AddressBookDTO;
 import com.sky.entity.AddressBook;
 import com.sky.result.Result;
 import com.sky.service.AddressBookService;
@@ -15,6 +16,7 @@ import java.util.List;
 @RequestMapping("/user/addressBook")
 @Tag(name = "C端地址簿接口")
 public class AddressBookController {
+
 
     @Autowired
     private AddressBookService addressBookService;
@@ -36,13 +38,14 @@ public class AddressBookController {
     /**
      * 新增地址
      *
-     * @param addressBook
+     * @param addressBookDTO
      * @return
      */
     @PostMapping
     @Operation(summary = "新增地址")
-    public Result save(@RequestBody AddressBook addressBook) {
-        addressBookService.save(addressBook);
+    // 将 @RequestBody 的类型从 AddressBook 修改为 AddressBookDTO
+    public Result save(@RequestBody AddressBookDTO addressBookDTO) {
+        addressBookService.save(addressBookDTO);
         return Result.success();
     }
 
