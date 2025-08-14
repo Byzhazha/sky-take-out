@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class OrderServiceImpl implements Orderservice {
+    public class OrderServiceImpl implements Orderservice {
     @Autowired
     private OrderMapper orderMapper;
     @Autowired
@@ -174,5 +174,127 @@ public class OrderServiceImpl implements Orderservice {
 
         orderMapper.update(orders);
     }
+
+    /**
+     * 历史订单查询
+     *
+     * @param ordersPageQueryDTO
+     * @return
+     */
+    public PageResult historyOrders(OrdersPageQueryDTO ordersPageQueryDTO) {
+        // 设置分页
+        PageHelper.startPage(ordersPageQueryDTO.getPage(), ordersPageQueryDTO.getPageSize());
+
+        ordersPageQueryDTO.setUserId(BaseContext.getCurrentId());
+
+        // 分页条件查询
+        Page<Orders> page = orderMapper.pageQuery(ordersPageQueryDTO);
+
+        List<OrderVO> list = new ArrayList<>();
+
+        // 查询出订单明细，并封装入OrderVO进行响应
+        if (page != null && page.getTotal() > 0) {
+            for (Orders orders : page) {
+                Long orderId = orders.getId();// 订单id
+
+                // 查询订单明细
+                List<OrderDetail> orderDetails = orderDetailMapper.getByOrderId(orderId);
+
+                OrderVO orderVO = new OrderVO();
+                BeanUtils.copyProperties(orders, orderVO);
+                orderVO.setOrderDetailList(orderDetails);
+
+                list.add(orderVO);
+            }
+        }
+        return new PageResult(page.getTotal(), list);
+    }
+
+    /**
+     * 查询订单详情
+     * @param id
+     * @return
+     */
+    public OrderVO getOrderDetail(Long id) {
+        // 根据id查询订单
+        Orders orders = orderMapper.getById(id);
+
+        // 查询该订单对应的菜品/套餐明细
+        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());
+
+        // 将该订单及其详情封装到OrderVO并返回
+        OrderVO orderVO = new OrderVO();
+        BeanUtils.copyProperties(orders, orderVO);
+        orderVO.setOrderDetailList(orderDetailList);
+
+        return orderVO;
+    }
+
+    /**
+     * 取消订单
+     *
+     * @param id
+     */
+    public void cancelOrder(Long id) throws Exception {
+        // 根据id查询订单
+        Orders ordersDB = orderMapper.getById(id);
+
+        // 校验订单是否存在
+        if (ordersDB == null) {
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+        }
+
+        // 订单状态 1待付款 2待接单 3已接单 4派送中 5已完成 6已取消
+        // 只有订单处于待付款和待接单状态时，才能取消
+        if (ordersDB.getStatus() > 2) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+
+        // 如果订单处于"待接单"状态，已支付，需要进行退款
+        if (ordersDB.getStatus().equals(Orders.TO_BE_CONFIRMED)) {
+            //由于没有真实的微信支付商户号，以下退款逻辑需要注释
+            /*
+            weChatPayUtil.refund(
+                    ordersDB.getNumber(), //商户订单号
+                    ordersDB.getNumber(), //商户退款单号
+                    ordersDB.getAmount(), //退款金额
+                    ordersDB.getAmount());//原订单金额
+            */
+            // 将支付状态修改为 退款
+            ordersDB.setPayStatus(Orders.REFUND);
+        }
+
+        // 更新订单信息：状态、取消原因、取消时间
+        ordersDB.setStatus(Orders.CANCELLED);
+        ordersDB.setCancelReason("用户取消");
+        ordersDB.setCancelTime(LocalDateTime.now());
+        orderMapper.update(ordersDB);
+    }
+
+    /**
+     * 再来一单
+     *
+     * @param id
+     */
+    public void repetition(Long id) {
+        // 根据订单id查询当前订单详情
+        List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(id);
+
+        // 将订单详情对象转换为购物车对象
+        List<ShoppingCart> shoppingCartList = orderDetailList.stream().map(x -> {
+            ShoppingCart shoppingCart = new ShoppingCart();
+
+            // 将原订单详情里面的菜品信息重新复制到购物车对象中
+            BeanUtils.copyProperties(x, shoppingCart, "id");
+            shoppingCart.setUserId(BaseContext.getCurrentId());
+            shoppingCart.setCreateTime(LocalDateTime.now());
+
+            return shoppingCart;
+        }).collect(Collectors.toList());
+
+        // 将购物车对象批量添加到数据库
+        shoppingCartMapper.insertBatch(shoppingCartList);
+    }
+
 
 }

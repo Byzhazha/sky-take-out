@@ -50,6 +50,30 @@ public class OrderController {
         orderservice.paySuccess(ordersPaymentDTO.getOrderNumber());
         return Result.success(orderPaymentVO);
     }
-
+    @GetMapping("/historyOrders")
+    @Operation(summary = "历史订单查询")
+    public Result<PageResult> historyOrders(OrdersPageQueryDTO ordersPageQueryDTO) {
+        log.info("历史订单查询：{}", ordersPageQueryDTO);
+        PageResult pageResult = orderservice.historyOrders(ordersPageQueryDTO);
+        return Result.success(pageResult);
+    }
+    @GetMapping("/orderDetail/{id}")
+    @Operation(summary = "查询订单详情")
+    public Result<OrderVO> detail(@PathVariable("id") Long id) {
+        OrderVO orderVO = orderservice.getOrderDetail(id);
+        return Result.success(orderVO);
+    }
+    @PutMapping("/cancel/{id}")
+    @Operation(summary = "取消订单")
+    public Result cancel(@PathVariable("id") Long id) throws Exception {
+        orderservice.cancelOrder(id);
+        return Result.success();
+    }
+    @PostMapping("/repetition/{id}")
+    @Operation(summary = "再来一单")
+    public Result repetition(@PathVariable Long id) {
+        orderservice.repetition(id);
+        return Result.success();
+    }
 
 }
