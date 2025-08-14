@@ -337,6 +337,11 @@ import java.util.stream.Collectors;
      *
      * @return
      */
+    /**
+     * 各个状态的订单数量统计
+     *
+     * @return
+     */
     public OrderStatisticsVO statistics() {
         // 根据状态，分别查询出待接单、待派送、派送中的订单数量
         Integer toBeConfirmed = orderMapper.countByStatus(Orders.TO_BE_CONFIRMED);
@@ -370,6 +375,7 @@ import java.util.stream.Collectors;
         }
         return orderVOList;
     }
+
 
     /**
      * 根据订单id获取菜品信息字符串
