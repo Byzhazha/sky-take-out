@@ -1,6 +1,9 @@
 package com.sky.controller.user;
 
-import com.sky.dto.OrdersDTO;
+import com.sky.dto.OrdersPageQueryDTO;
+import com.sky.result.PageResult;
+import com.sky.vo.OrderVO;
+import org.springframework.web.bind.annotation.GetMapping;
 import com.sky.dto.OrdersPaymentDTO;
 import com.sky.dto.OrdersSubmitDTO;
 import com.sky.result.Result;
@@ -17,8 +20,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user/order")
 @Tag(name = "用户端订单相关接口")
 @Slf4j
-
-
 public class OrderController {
 
     @Autowired
@@ -26,11 +27,12 @@ public class OrderController {
 
     @PostMapping("/submit")
     @Operation(summary = "用户下单")
-    public Result<OrderSubmitVO> submit(@RequestBody OrdersSubmitDTO ordersSubmitDTO){
-        log.info("用户下单，参数为{}",ordersSubmitDTO);
-        OrderSubmitVO orderSubmitVO= orderservice.submitOrder(ordersSubmitDTO);
+    public Result<OrderSubmitVO> submit(@RequestBody OrdersSubmitDTO ordersSubmitDTO) {
+        log.info("用户下单，参数为{}", ordersSubmitDTO);
+        OrderSubmitVO orderSubmitVO = orderservice.submitOrder(ordersSubmitDTO);
         return Result.success(orderSubmitVO);
     }
+
     /**
      * 订单支付
      *
@@ -43,6 +45,9 @@ public class OrderController {
         log.info("订单支付：{}", ordersPaymentDTO);
         OrderPaymentVO orderPaymentVO = orderservice.payment(ordersPaymentDTO);
         log.info("生成预支付交易单：{}", orderPaymentVO);
+
+        //【修改点】 模拟支付成功，直接调用paySuccess
+        orderservice.paySuccess(ordersPaymentDTO.getOrderNumber());
         return Result.success(orderPaymentVO);
     }
 
