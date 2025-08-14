@@ -42,7 +42,8 @@ public class SecurityConfig {
                                 "/admin/employee/login",
                                 "/admin/employee/login", // 管理员登录
                                 "/user/user/login",      // 用户登录
-                                "/user/shop/**"         // 用户端店铺状态
+                                "/user/shop/**",         // 用户端店铺状态
+                                "/ws/**"
                         ).permitAll()
                         // 其他所有请求都需要登录认证
                         .anyRequest().authenticated()

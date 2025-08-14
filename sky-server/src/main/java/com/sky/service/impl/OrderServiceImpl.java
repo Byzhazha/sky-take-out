@@ -14,6 +14,7 @@ import com.sky.mapper.*;
 import com.sky.result.PageResult;
 import com.sky.service.Orderservice;
 import com.sky.utils.WeChatPayUtil;
+import com.sky.websocket.WebSocketServer;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
@@ -50,6 +51,8 @@ import java.util.stream.Collectors;
     private AddressBookMapper addressBookMapper;
     @Autowired
     private WeChatPayUtil weChatPayUtil;
+    @Autowired
+    private WebSocketServer webSocketServer;
 
     /**
      * 用户下单
@@ -173,6 +176,14 @@ import java.util.stream.Collectors;
                 .build();
 
         orderMapper.update(orders);
+
+        // send notification to admin
+        Map map = new HashMap();
+        map.put("type", 1); // 1: new order
+        map.put("orderId", ordersDB.getId());
+        map.put("content", "您有新的订单");
+        String json = JSONObject.toJSONString(map);
+        webSocketServer.sendToAllClient(json);
     }
 
     /**
@@ -269,6 +280,14 @@ import java.util.stream.Collectors;
         ordersDB.setCancelReason("用户取消");
         ordersDB.setCancelTime(LocalDateTime.now());
         orderMapper.update(ordersDB);
+
+        // send notification to admin
+        Map map = new HashMap();
+        map.put("type", 2); // 2: order cancelled
+        map.put("orderId", id);
+        map.put("content", "有订单被用户取消");
+        String json = JSONObject.toJSONString(map);
+        webSocketServer.sendToAllClient(json);
     }
 
     /**
