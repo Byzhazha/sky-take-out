@@ -13,7 +13,12 @@ public interface AddressBookService {
 
     AddressBook getById(Long id);
 
-    void update(AddressBook addressBook);
+    /**
+     * 根据id修改地址
+     *
+     * @param addressBookDTO
+     */
+    void update(AddressBookDTO addressBookDTO);
 
     void setDefault(AddressBook addressBook);
 

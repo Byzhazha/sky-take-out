@@ -36,13 +36,12 @@ public class AddressBookServiceImpl implements AddressBookService {
     // 实现修改后的 save 方法
     public void save(AddressBookDTO addressBookDTO) {
         AddressBook addressBook = new AddressBook();
-        // 使用 BeanUtils 复制大部分同名属性
         BeanUtils.copyProperties(addressBookDTO, addressBook);
 
-        // **核心兼容逻辑：如果consignee为空，但name有值，则使用name的值**
-        if (addressBook.getConsignee() == null || addressBook.getConsignee().isEmpty()) {
-            addressBook.setConsignee(addressBookDTO.getName());
-        }
+        //拼接详细地址
+        String detail = addressBookDTO.getProvinceName() + addressBookDTO.getCityName() + addressBookDTO.getDistrictName() + addressBookDTO.getDetail();
+        addressBook.setDetail(detail);
+
 
         addressBook.setUserId(BaseContext.getCurrentId());
         addressBook.setIsDefault(0);
@@ -73,9 +72,16 @@ public class AddressBookServiceImpl implements AddressBookService {
     /**
      * 根据id修改地址
      *
-     * @param addressBook
+     * @param
      */
-    public void update(AddressBook addressBook) {
+    public void update(AddressBookDTO addressBookDTO) {
+        AddressBook addressBook = new AddressBook();
+        BeanUtils.copyProperties(addressBookDTO, addressBook);
+
+        //拼接详细地址
+        String detail = addressBookDTO.getProvinceName() + addressBookDTO.getCityName() + addressBookDTO.getDistrictName() + addressBookDTO.getDetail();
+        addressBook.setDetail(detail);
+
         addressBookMapper.update(addressBook);
     }
 

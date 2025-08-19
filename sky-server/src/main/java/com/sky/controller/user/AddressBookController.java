@@ -59,13 +59,13 @@ public class AddressBookController {
     /**
      * 根据id修改地址
      *
-     * @param addressBook
+     * @param addressBookDTO
      * @return
      */
     @PutMapping
     @Operation(summary = "根据id修改地址")
-    public Result update(@RequestBody AddressBook addressBook) {
-        addressBookService.update(addressBook);
+    public Result update(@RequestBody AddressBookDTO addressBookDTO) {
+        addressBookService.update(addressBookDTO);
         return Result.success();
     }
 
